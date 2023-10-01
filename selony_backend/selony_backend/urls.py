@@ -17,6 +17,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+admin.site.site_header = "Selony Admin"
+admin.site.site_title = "Selony Administration"
+admin.site.index_title = "Welcome To Selony"
+
 urlpatterns = [
     path('admin/', admin.site.urls),
 ]
