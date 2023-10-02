@@ -17,10 +17,14 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from graphene_django.views import GraphQLView
+from .schema import schema
+
 admin.site.site_header = "Selony Admin"
 admin.site.site_title = "Selony Administration"
 admin.site.index_title = "Welcome To Selony"
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('graphql/', GraphQLView.as_view(graphiql=True, schema=schema))
 ]
