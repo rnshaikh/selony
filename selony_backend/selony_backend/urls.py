@@ -15,7 +15,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import include, path
 
 from graphene_django.views import GraphQLView
 from .schema import schema
@@ -26,5 +26,6 @@ admin.site.index_title = "Welcome To Selony"
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path("o/", include('oauth2_provider.urls'), name="oauth2_apps"),
     path('graphql/', GraphQLView.as_view(graphiql=True, schema=schema))
 ]
