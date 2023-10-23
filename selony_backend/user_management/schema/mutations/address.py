@@ -1,7 +1,10 @@
 import graphene
 
-from user_management.models import Address
+from django.shortcuts import get_object_or_404
 
+from graphql_relay import from_global_id
+
+from user_management.models import Address, User
 from user_management.schema.types.address import AddressType
 
 from selony_backend.custom_decorator import permission_required
@@ -18,6 +21,8 @@ class AddressInputType(graphene.InputObjectType):
     country_code = graphene.String()
     postal_code = graphene.String()
     company = graphene.String()
+    created_by = graphene.ID(required=False)
+    updated_by = graphene.ID(required=False)
 
 
 class AddressCreate(graphene.Mutation):
@@ -28,14 +33,23 @@ class AddressCreate(graphene.Mutation):
     address = graphene.Field(AddressType)
 
     @permission_required(is_authenticated)
-    def mutate(self, parent, info, **kwargs):
+    def mutate(parent, info, **kwargs):
 
         address = kwargs.get('address', None)
-        address['created_by'] = info.context.user
+        created_by = address.get('created_by', None)
+
+        if info.context.user.is_superuser:
+            if not created_by:
+                raise Exception("created_by is required")
+
+            created_by = from_global_id(created_by)[1]
+            created_by = get_object_or_404(User, id=created_by)
+            address['created_by'] = created_by
+        else:
+            address['created_by'] = info.context.user
 
         address_obj = Address(**address)
-        address_obj = address_obj.save()
-
+        address_obj.save()
         return AddressCreate(address=address_obj)
 
 

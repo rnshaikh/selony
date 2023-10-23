@@ -1,7 +1,6 @@
 import graphene
 
 from graphene_django import DjangoObjectType
-from graphql_relay import from_global_id
 
 from user_management.models import User
 
