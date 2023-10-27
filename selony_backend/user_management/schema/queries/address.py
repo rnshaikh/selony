@@ -12,9 +12,11 @@ class AddressQueries(graphene.ObjectType):
 
     addresses = graphene.relay.ConnectionField(AddressConnection)
 
-    @permission_required(is_superuser)
     @permission_required(is_authenticated)
     def resolve_addresses(root, info, **kwargs):
 
-        addresses = Address.objects.all()
+        if info.context.user.is_superuser:
+            addresses = Address.objects.all()
+        else:
+            addresses = Address.objects.filter(created_by=info.context.user)
         return addresses
