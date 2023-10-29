@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'oauth2_provider',
     'graphene_django',
-    'user_management'
+    'user_management',
+    'product_management'
 
 ]
 
