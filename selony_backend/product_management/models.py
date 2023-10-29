@@ -1,5 +1,7 @@
 from django.db import models
 
+from user_management.models import Address
+
 
 def directory_path(instance, filename):
 
@@ -14,19 +16,25 @@ class Category(models.Model):
     slug = models.TextField(blank=True, null=True)
 
 
+class Attribute(models.Model):
+
+    name = models.CharField(max_length=255)
+    description = models.TextField()
+
+
+class AttributeChoice(models.Model):
+
+    attribute = models.ForeignKey(Attribute, on_delete=models.CASCADE)
+    value = models.CharField(max_length=255)
+
+
 class ProductClass(models.Model):
 
     name = models.CharField(max_length=255)
     description = models.TextField()
     has_variant = models.BooleanField(default=False)
-
-
-class Attribute(models.Model):
-    pass
-
-
-class AttributeChoice(models.Model):
-    pass
+    attributes = models.ManyToManyField(Attribute,
+                                        on_delete=models.CASCADE)
 
 
 class Product(models.Model):
@@ -56,6 +64,8 @@ class ProductImage(models.Model):
 
 
 class ProductStock(models.Model):
-    pass
 
-
+    variant = models.ForeignKey(ProductVariant, on_delete=models.CASCADE)
+    quantity = models.IntegerField()
+    location = models.ForeignKey(Address, on_delete=models.CASCADE)
+    price = models.DecimalField(max_digits=20, decimal_places=10)
