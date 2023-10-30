@@ -5,8 +5,14 @@ from user_management.schema.queries.address import AddressQueries
 from user_management.schema.mutations.user_auth import UserAuthMutation
 from user_management.schema.mutations.address import AddressMutation
 
+from product_management.schema.queries.product import (CategoryQueries,
+                                                       ProductClassQueries,
+                                                       ProductQueries)
 
-class Query(UserQueries, AddressQueries):
+
+class Query(UserQueries, AddressQueries,
+            CategoryQueries, ProductClassQueries,
+            ProductQueries):
     pass
 
 

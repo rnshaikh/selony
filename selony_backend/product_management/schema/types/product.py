@@ -27,7 +27,7 @@ class AttributeChoiceType(DjangoObjectType):
 
     class Meta:
         model = AttributeChoice
-        fields = ('id', 'value')
+        fields = ('id', 'value', 'attribute')
         interfaces = (graphene.relay.Node, )
 
 
@@ -71,49 +71,12 @@ class ProductClassConnection(graphene.relay.Connection):
         node = ProductClassType
 
 
-class ProductType(DjangoObjectType):
-
-    class Meta:
-        model = Product
-        fields = ('id', 'name', 'description', 'price',
-                  'category', 'product_class', 'attibutes')
-        interfaces = (graphene.relay.Node, )
-
-    product_class = graphene.Field(ProductClassType)
-
-
-class ProductConnection(graphene.relay.Connection):
-
-    class Meta:
-        node = ProductType
-
-
-class ProductVariantType(DjangoObjectType):
-
-    class Meta:
-        model = ProductVariant
-        fields = ('id', 'name', 'description', 'price',
-                  'product', 'attibutes')
-        interfaces = (graphene.relay.Node, )
-
-    product = graphene.Field(ProductType)
-
-
-class ProductVariantConnection(graphene.relay.Connection):
-
-    class Meta:
-        node = ProductVariant
-
-
 class ProductImageType(DjangoObjectType):
 
     class Meta:
         model = ProductImage
         fields = ('id', 'image', 'product', 'variant')
         interfaces = (graphene.relay.Node, )
-
-    product = graphene.Field(ProductType)
-    variant = graphene.Field(ProductVariantType)
 
 
 class ProductImageConnection(graphene.relay.Connection):
@@ -130,12 +93,56 @@ class ProductStockType(DjangoObjectType):
                   'variant')
         interfaces = (graphene.relay.Node, )
 
-    location = graphene.Field(AddressType)
-    variant = graphene.Field(ProductVariantType)
-
 
 class ProductStockConnection(graphene.relay.Connection):
 
     class Meta:
         node = ProductStockType
 
+
+class ProductType(DjangoObjectType):
+
+    class Meta:
+        model = Product
+        fields = ('id', 'name', 'description', 'price',
+                  'category', 'product_class', 'attibutes',
+                  'productimage_set')
+        interfaces = (graphene.relay.Node, )
+
+    product_class = graphene.Field(ProductClassType)
+    productimage_set = graphene.relay.ConnectionField(ProductImageConnection)
+
+    def resolve_productimage_set(root, info, **kwargs):
+        return root.productimage_set.all()
+
+
+class ProductConnection(graphene.relay.Connection):
+
+    class Meta:
+        node = ProductType
+
+
+class ProductVariantType(DjangoObjectType):
+
+    class Meta:
+        model = ProductVariant
+        fields = ('id', 'name', 'description', 'price',
+                  'product', 'attibutes', 'productimage_set',
+                  'productstock_set')
+        interfaces = (graphene.relay.Node, )
+
+    product = graphene.Field(ProductType)
+    productimage_set = graphene.relay.ConnectionField(ProductImageConnection)
+    productstock_set = graphene.relay.ConnectionField(ProductStockConnection)
+
+    def resolve_productimage_set(root, info, **kwargs):
+        return root.productimage_set.all()
+
+    def resolve_productstock_set(root, info, **kwargs):
+        return root.productstock_set.all()
+
+
+class ProductVariantConnection(graphene.relay.Connection):
+
+    class Meta:
+        node = ProductVariantType
