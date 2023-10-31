@@ -15,12 +15,3 @@ class AddressType(DjangoObjectType):
                   'company', 'created_by', 'created_at', 'updated_by',
                   'updated_at')
         interfaces = (graphene.relay.Node,)
-
-
-class AddressConnection(graphene.relay.Connection):
-
-    class Meta:
-        node = AddressType
-
-
-
