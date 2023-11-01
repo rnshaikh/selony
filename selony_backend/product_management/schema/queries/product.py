@@ -1,17 +1,20 @@
 import graphene
 
+from graphene_django.filter import DjangoFilterConnectionField
+
 from product_management.models import (Category, ProductClass,
                                        Product, ProductVariant,
                                        ProductImage, ProductStock)
-from product_management.schema.types.product import (CategoryConnection,
+from product_management.schema.types.product import (ProductType,
+                                                     ProductVariantType,
+                                                     CategoryConnection,
                                                      ProductClassConnection,
-                                                     ProductConnection,
-                                                     ProductVariantConnection,
                                                      ProductImageConnection,
                                                      ProductStockConnection)
 
 from selony_backend.custom_decorator import permission_required
 from selony_backend.custom_permission import is_authenticated
+from selony_backend.custom_filter import (ProductFilter, VariantFilter)
 
 
 class CategoryQueries(graphene.ObjectType):
@@ -35,8 +38,10 @@ class ProductClassQueries(graphene.ObjectType):
 
 class ProductQueries(graphene.ObjectType):
 
-    products = graphene.relay.ConnectionField(ProductConnection)
-    product_variants = graphene.relay.ConnectionField(ProductVariantConnection)
+    products = DjangoFilterConnectionField(ProductType,
+                                           filterset_class=ProductFilter)
+    product_variants = DjangoFilterConnectionField(ProductVariantType,
+                                                   filterset_class=VariantFilter)
     product_images = graphene.relay.ConnectionField(ProductImageConnection)
     product_stocks = graphene.relay.ConnectionField(ProductStockConnection)
 
