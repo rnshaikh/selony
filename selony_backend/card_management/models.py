@@ -27,7 +27,7 @@ class Card(CreateUserInfo):
     status = models.CharField(max_length=125, choices=Status.as_tuple())
 
     def __str__(self):
-        return self.created_by.email + self.status
+        return self.created_by.email + " " + self.status
 
 
 class CardUnit(models.Model):
@@ -40,7 +40,7 @@ class CardUnit(models.Model):
     data = models.JSONField(blank=True, null=True)
 
     def __str__(self):
-        return "Card No:" + self.card.id
+        return "Card No: " + str(self.card.id)
 
 
 

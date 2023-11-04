@@ -1,3 +1,6 @@
 from django.contrib import admin
 
-# Register your models here.
+from card_management.models import Card, CardUnit
+
+admin.site.register(Card)
+admin.site.register(CardUnit)
