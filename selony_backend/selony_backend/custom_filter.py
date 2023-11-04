@@ -1,11 +1,14 @@
 import django_filters
 
-from graphene_django.filter import GlobalIDMultipleChoiceFilter
+from graphene_django.filter import (GlobalIDMultipleChoiceFilter,
+                                    GlobalIDFilter)
 
 
 from user_management.models import Address
 from product_management.models import (Product,
-                                       ProductVariant)
+                                       ProductVariant,
+                                       ProductImage,
+                                       ProductStock)
 
 
 class NumberInFilter(django_filters.BaseInFilter,
@@ -27,6 +30,7 @@ class AddressFilter(django_filters.FilterSet):
 
 class ProductFilter(django_filters.FilterSet):
 
+    id = GlobalIDFilter(field_name="id")
     min_price = django_filters.NumberFilter(field_name='price',
                                             lookup_expr="gte")
     max_price = django_filters.NumberFilter(field_name='price',
@@ -42,6 +46,7 @@ class ProductFilter(django_filters.FilterSet):
 
 class VariantFilter(django_filters.FilterSet):
 
+    id = GlobalIDFilter(field_name="id")
     min_price = django_filters.NumberFilter(field_name='price',
                                             lookup_expr='gte')
     max_price = django_filters.NumberFilter(field_name='price',
@@ -54,3 +59,21 @@ class VariantFilter(django_filters.FilterSet):
         fields = ('id', 'category', 'product',
                   'product_class', 'category',
                   'min_price', 'max_price')
+
+
+class ProductImageFilter(django_filters.FilterSet):
+
+    id = GlobalIDFilter(field_name="id")
+
+    class Meta:
+        model = ProductImage
+        fields = ('id', 'product', 'variant')
+
+
+class ProductStockFilter(django_filters.FilterSet):
+
+    id = GlobalIDFilter(field_name="id")
+
+    class Meta:
+        model = ProductStock
+        fields = ('id', 'variant', 'actual_price')
