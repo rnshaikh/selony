@@ -9,12 +9,12 @@ from product_management.schema.queries.product import (CategoryQueries,
                                                        ProductClassQueries,
                                                        ProductQueries)
 
-from card_management.schema.queries.card import CardQueries
+from card_management.schema.queries.cart import CartQueries
 
 
 class Query(UserQueries, AddressQueries,
             CategoryQueries, ProductClassQueries,
-            ProductQueries, CardQueries):
+            ProductQueries, CartQueries):
     pass
 
 

@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from card_management.models import Card, CardUnit
+from card_management.models import Cart, CartUnit
 
-admin.site.register(Card)
-admin.site.register(CardUnit)
+admin.site.register(Cart)
+admin.site.register(CartUnit)

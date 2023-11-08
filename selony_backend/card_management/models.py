@@ -18,7 +18,7 @@ class Status(Enum):
         return ((item.value, item.name) for item in cls)
 
 
-class Card(CreateUserInfo):
+class Cart(CreateUserInfo):
 
     total_quantity = models.IntegerField()
     total_price = models.DecimalField(max_digits=12, decimal_places=2)
@@ -30,9 +30,9 @@ class Card(CreateUserInfo):
         return self.created_by.email + " " + self.status
 
 
-class CardUnit(models.Model):
+class CartUnit(models.Model):
 
-    card = models.ForeignKey(Card, on_delete=models.CASCADE)
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
     variant = models.ForeignKey(ProductVariant,
                                 on_delete=models.CASCADE)
     quatity = models.IntegerField()
@@ -40,7 +40,7 @@ class CardUnit(models.Model):
     data = models.JSONField(blank=True, null=True)
 
     def __str__(self):
-        return "Card No: " + str(self.card.id)
+        return "Cart No: " + str(self.cart.id)
 
 
 
