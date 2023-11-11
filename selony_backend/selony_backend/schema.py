@@ -10,7 +10,7 @@ from product_management.schema.queries.product import (CategoryQueries,
                                                        ProductQueries)
 
 from card_management.schema.queries.cart import CartQueries
-from card_management.schema.mutations.cart import AddCartUnit
+from card_management.schema.mutations.cart import CardMutation
 
 
 class Query(UserQueries, AddressQueries,
@@ -19,7 +19,7 @@ class Query(UserQueries, AddressQueries,
     pass
 
 
-class Mutation(UserAuthMutation, AddressMutation, AddCartUnit):
+class Mutation(UserAuthMutation, AddressMutation, CardMutation):
     pass
 
 

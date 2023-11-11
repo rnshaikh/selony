@@ -35,7 +35,7 @@ class CartUnit(models.Model):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
     variant = models.ForeignKey(ProductVariant,
                                 on_delete=models.CASCADE)
-    quatity = models.IntegerField()
+    quantity = models.IntegerField()
     price = models.DecimalField(max_digits=12, decimal_places=2)
     data = models.JSONField(blank=True, null=True)
 

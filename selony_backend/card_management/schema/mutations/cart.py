@@ -15,22 +15,18 @@ from selony_backend.custom_permission import is_authenticated
 
 class AddCartUnit(graphene.relay.ClientIDMutation):
 
-
     class Input:
 
         variant = graphene.ID(required=True)
-        quantity = graphene.Float(required=True)
-        price = graphene.Integer(required=True)
-
+        quantity = graphene.Int(required=True)
 
     ok = graphene.Boolean()
 
-
     @permission_required(is_authenticated)
-    @classmethod
-    def mutate_and_get_payload(cls, parent, info, **kwargs):
+    def mutate_and_get_payload(parent, info, **kwargs):
 
         variant = kwargs.get('variant', None)
+        variant = from_global_id(variant)[1]
         variant_obj = get_object_or_404(ProductVariant, id=variant)
 
         cart_obj = Cart.objects.filter(created_by=info.context.user,
@@ -60,3 +56,6 @@ class AddCartUnit(graphene.relay.ClientIDMutation):
 
 
 
+class CardMutation(graphene.ObjectType):
+
+    add_card_unit = AddCartUnit.Field()

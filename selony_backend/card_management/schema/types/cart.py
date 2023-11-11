@@ -9,7 +9,7 @@ class CartUnitType(DjangoObjectType):
 
     class Meta:
         model = CartUnit
-        fields = ('id', 'cart', 'variant', 'quatity',
+        fields = ('id', 'cart', 'variant', 'quantity',
                   'price', 'data')
         interfaces = (graphene.relay.Node, )
 

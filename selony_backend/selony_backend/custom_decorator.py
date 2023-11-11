@@ -10,6 +10,8 @@ def check_permission(permission, context):
 def permission_required(permission):
     def outer(func):
         def inner(cls, info, *args, **kwargs):
+            import pdb
+            pdb.set_trace()
             if check_permission(permission, info.context):
                 return func(cls, info, *args, **kwargs)
             raise Exception("Permission Denied")
