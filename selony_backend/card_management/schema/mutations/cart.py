@@ -55,7 +55,25 @@ class AddCartUnit(graphene.relay.ClientIDMutation):
         return AddCartUnit(ok=True)
 
 
+class RemoveCartUnit(graphene.relay.ClientIDMutation):
 
-class CardMutation(graphene.ObjectType):
+    class Input:
+        card_unit_id = graphene.ID(required=True)
 
-    add_card_unit = AddCartUnit.Field()
+    ok = graphene.Boolean()
+
+    @permission_required(is_authenticated)
+    def mutate_and_get_payload(parent, info, **kwargs):
+
+        card_unit_id = kwargs.get('card_unit_id', None)
+        id = from_global_id(card_unit_id)[1]
+        obj = get_object_or_404(CartUnit, id=id)
+        # add cart unit delete logic
+        obj.delete()
+        return RemoveCartUnit(ok=True)
+
+
+class CartMutation(graphene.ObjectType):
+
+    add_cart_unit = AddCartUnit.Field()
+    remove_cart_remove = RemoveCartUnit.Field()
