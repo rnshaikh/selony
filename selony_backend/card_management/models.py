@@ -20,8 +20,8 @@ class Status(Enum):
 
 class Cart(CreateUserInfo):
 
-    total_quantity = models.IntegerField()
-    total_price = models.DecimalField(max_digits=12, decimal_places=2)
+    total_quantity = models.IntegerField(default=0)
+    total_price = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     last_status_change = models.DateTimeField(null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True)
     status = models.CharField(max_length=125, choices=Status.as_tuple())
