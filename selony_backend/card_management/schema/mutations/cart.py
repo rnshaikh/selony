@@ -36,6 +36,7 @@ class AddCartUnit(graphene.relay.ClientIDMutation):
             cart_obj = Cart(created_by=info.context.user,
                             status=Status.Active.value)
             cart_obj.total_quantity = 0
+            obj.last_status_change = timezone.now()
             cart_obj.save()
         else:
             cart_obj = cart_obj[0]
@@ -67,18 +68,54 @@ class AddCartUnit(graphene.relay.ClientIDMutation):
         return AddCartUnit(ok=True)
 
 
-class RemoveCartUnit(graphene.relay.ClientIDMutation):
+class UpdateCartUnit(graphene.relay.ClientIDMutation):
 
     class Input:
-        card_unit_id = graphene.ID(required=True)
+        cart_unit_id = graphene.ID(required=True)
+        quantity = graphene.Int(required=True)
 
     ok = graphene.Boolean()
 
     @permission_required(is_authenticated)
     def mutate_and_get_payload(parent, info, **kwargs):
 
-        card_unit_id = kwargs.get('card_unit_id', None)
-        id = from_global_id(card_unit_id)[1]
+        cart_unit_id = kwargs.get('cart_unit_id', None)
+        quantity = kwargs.get('quantity', 0)
+        id = from_global_id(cart_unit_id)[1]
+        obj = get_object_or_404(CartUnit, id=id)
+
+        if obj.cart.created_by != info.context.user:
+            raise Exception("Permission Denied")
+
+        prev_quantity = obj.quantity
+        prev_price = obj.price
+        obj.cart.total_quantity -= prev_quantity
+        obj.cart.total_price -= prev_price
+        obj.cart.save()
+
+        price = quantity * obj.variant.price
+        obj.price = price
+        obj.quantity = quantity
+
+        obj.cart.total_quantity += quantity
+        obj.cart.total_price += price
+        obj.cart.save()
+        obj.save()
+        return UpdateCartUnit(ok=True)
+
+
+class RemoveCartUnit(graphene.relay.ClientIDMutation):
+
+    class Input:
+        cart_unit_id = graphene.ID(required=True)
+
+    ok = graphene.Boolean()
+
+    @permission_required(is_authenticated)
+    def mutate_and_get_payload(parent, info, **kwargs):
+
+        cart_unit_id = kwargs.get('cart_unit_id', None)
+        id = from_global_id(cart_unit_id)[1]
         obj = get_object_or_404(CartUnit, id=id)
 
         if obj.cart.created_by != info.context.user:
@@ -110,6 +147,7 @@ class RemoveCart(graphene.relay.ClientIDMutation):
             raise Exception("Permission Denied")
 
         obj.status = Status.Discarded.value
+        obj.last_status_change = timezone.now()
         obj.save()
         return RemoveCart(ok=True)
 
@@ -118,4 +156,6 @@ class CartMutation(graphene.ObjectType):
 
     add_cart_unit = AddCartUnit.Field()
     remove_cart_unit = RemoveCartUnit.Field()
+    update_cart_unit = UpdateCartUnit.Field()
     remove_cart = RemoveCart.Field()
+
