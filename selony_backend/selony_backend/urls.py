@@ -15,8 +15,25 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import include, path
+from django.conf import settings
+from django.conf.urls.static import static
+
+
+from graphene_django.views import GraphQLView
+from .schema import schema
+
+admin.site.site_header = "Selony Admin"
+admin.site.site_title = "Selony Administration"
+admin.site.index_title = "Welcome To Selony"
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path("o/", include('oauth2_provider.urls'), name="oauth2_apps"),
+    path('graphql/', GraphQLView.as_view(graphiql=True, schema=schema))
 ]
+
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL,
+                          document_root=settings.MEDIA_ROOT)
