@@ -9,14 +9,17 @@ from product_management.schema.queries.product import (CategoryQueries,
                                                        ProductClassQueries,
                                                        ProductQueries)
 
+from card_management.schema.queries.cart import CartQueries
+from card_management.schema.mutations.cart import CartMutation
+
 
 class Query(UserQueries, AddressQueries,
             CategoryQueries, ProductClassQueries,
-            ProductQueries):
+            ProductQueries, CartQueries):
     pass
 
 
-class Mutation(UserAuthMutation, AddressMutation):
+class Mutation(UserAuthMutation, AddressMutation, CartMutation):
     pass
 
 

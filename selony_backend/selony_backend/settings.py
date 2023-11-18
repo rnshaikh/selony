@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     'django_filters',
     'graphene_django',
     'user_management',
-    'product_management'
+    'product_management',
+    'card_management'
 
 ]
 
