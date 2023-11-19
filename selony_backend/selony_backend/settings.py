@@ -45,7 +45,8 @@ INSTALLED_APPS = [
     'graphene_django',
     'user_management',
     'product_management',
-    'card_management'
+    'card_management',
+    'order_management'
 
 ]
 
