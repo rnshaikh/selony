@@ -39,3 +39,11 @@ class OrderConnection(graphene.relay.Connection):
 
     class Meta:
         node = OrderType
+
+
+class OrderInputType(graphene.InputObjectType):
+
+    cart = graphene.ID()
+    billing_address = graphene.ID()
+    shipping_address = graphene.ID()
+

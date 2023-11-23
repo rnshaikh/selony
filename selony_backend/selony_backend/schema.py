@@ -13,6 +13,7 @@ from card_management.schema.queries.cart import CartQueries
 from card_management.schema.mutations.cart import CartMutation
 
 from order_management.schema.queries.order import OrderQueries
+from order_management.schema.mutations.order import OrderMutation
 
 
 class Query(UserQueries, AddressQueries,
@@ -21,7 +22,8 @@ class Query(UserQueries, AddressQueries,
     pass
 
 
-class Mutation(UserAuthMutation, AddressMutation, CartMutation):
+class Mutation(UserAuthMutation, AddressMutation, CartMutation,
+               OrderMutation):
     pass
 
 

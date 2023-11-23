@@ -37,8 +37,8 @@ class Order(CreateUserInfo):
                                          related_name="order_shipping_address",
                                          on_delete=models.DO_NOTHING)
 
-    def __str__(self):
-        return self.created_by.email + " " + self.status
+    # def __str__(self):
+    #     return self.created_by.email + " " + self.status
 
 
 class OrderUnit(models.Model):
