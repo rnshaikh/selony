@@ -29,6 +29,7 @@ class CreateOrder(graphene.relay.ClientIDMutation):
 
     ok = graphene.Boolean()
     intent = graphene.String()
+    order = graphene.Field(OrderType)
 
     @permission_required(is_authenticated)
     def mutate_and_get_payload(parent, info, **kwargs):
@@ -51,7 +52,8 @@ class CreateOrder(graphene.relay.ClientIDMutation):
                           billing_address=billing_address,
                           shipping_address=shipping_address,
                           status=OrderStatus.Pending.value,
-                          last_status_change=timezone.now())
+                          last_status_change=timezone.now(),
+                          created_by=info.context.user)
         order_obj.save()
         order_units = []
 
@@ -71,9 +73,14 @@ class CreateOrder(graphene.relay.ClientIDMutation):
             automatic_payment_methods={
                 'enabled': True,
             },
+            metadata={
+                "order": order_obj.id
+            }
         )
 
-        return CreateOrder(ok=True, intent=intent['client_secret'])
+        return CreateOrder(ok=True,
+                           intent=intent['client_secret'],
+                           order=order_obj)
 
 
 class OrderMutation(graphene.ObjectType):

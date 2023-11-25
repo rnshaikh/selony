@@ -11,6 +11,9 @@ from selony_backend.model_mixin import CreateUserInfo
 class OrderStatus(Enum):
 
     Pending = "Pending"
+    PaymentCompleted = "Payment Completed"
+    PaymentCancelled = "Payment Cancelled"
+    PaymentFailed = "Payment Failed"
     Shipped = "Shipped"
     Cancelled = "Cancelled"
     Declined = "Declined"
@@ -36,6 +39,8 @@ class Order(CreateUserInfo):
     shipping_address = models.ForeignKey(Address,
                                          related_name="order_shipping_address",
                                          on_delete=models.DO_NOTHING)
+
+    payment_info = models.JSONField(blank=True, null=True)
 
     # def __str__(self):
     #     return self.created_by.email + " " + self.status
