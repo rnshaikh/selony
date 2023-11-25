@@ -12,14 +12,18 @@ from product_management.schema.queries.product import (CategoryQueries,
 from card_management.schema.queries.cart import CartQueries
 from card_management.schema.mutations.cart import CartMutation
 
+from order_management.schema.queries.order import OrderQueries
+from order_management.schema.mutations.order import OrderMutation
+
 
 class Query(UserQueries, AddressQueries,
             CategoryQueries, ProductClassQueries,
-            ProductQueries, CartQueries):
+            ProductQueries, CartQueries, OrderQueries):
     pass
 
 
-class Mutation(UserAuthMutation, AddressMutation, CartMutation):
+class Mutation(UserAuthMutation, AddressMutation, CartMutation,
+               OrderMutation):
     pass
 
 

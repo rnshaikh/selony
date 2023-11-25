@@ -23,6 +23,8 @@ from django.conf.urls.static import static
 from graphene_django.views import GraphQLView
 from .schema import schema
 
+from order_management.views import WebHookView
+
 admin.site.site_header = "Selony Admin"
 admin.site.site_title = "Selony Administration"
 admin.site.index_title = "Welcome To Selony"
@@ -30,7 +32,8 @@ admin.site.index_title = "Welcome To Selony"
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("o/", include('oauth2_provider.urls'), name="oauth2_apps"),
-    path('graphql/', GraphQLView.as_view(graphiql=True, schema=schema))
+    path('graphql/', GraphQLView.as_view(graphiql=True, schema=schema)),
+    path('order/webhook/', WebHookView.as_view(), name="stripe_webhook")
 ]
 
 

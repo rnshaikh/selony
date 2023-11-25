@@ -45,7 +45,8 @@ INSTALLED_APPS = [
     'graphene_django',
     'user_management',
     'product_management',
-    'card_management'
+    'card_management',
+    'order_management'
 
 ]
 
@@ -164,3 +165,4 @@ AUTHENTICATION_BACKENDS = ["django.contrib.auth.backends.ModelBackend",
 
 HTTP_PROTOCAL = os.environ.get('HTTP_PROTOCAL', "http://")
 
+STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY', None)
