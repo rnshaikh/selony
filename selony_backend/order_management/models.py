@@ -42,8 +42,8 @@ class Order(CreateUserInfo):
 
     payment_info = models.JSONField(blank=True, null=True)
 
-    # def __str__(self):
-    #     return self.created_by.email + " " + self.status
+    def __str__(self):
+        return self.created_by.email + " " + self.status
 
 
 class OrderUnit(models.Model):
@@ -54,3 +54,11 @@ class OrderUnit(models.Model):
     unit_price_gross = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     total_price = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     quantity = models.IntegerField()
+
+
+class OrderHistory(models.Model):
+
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    data = models.JSONField(blank=True, null=True)
+    status = models.CharField(max_length=100, choices=OrderStatus.as_tuple())
+    created_at = models.DateTimeField(auto_now_add=True)
