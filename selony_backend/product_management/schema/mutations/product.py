@@ -4,7 +4,7 @@ from graphql_relay import from_global_id
 
 from django.shortcuts import get_object_or_404
 
-from product_management.models import ProductReview
+from product_management.models import ProductReview, ProductVariant
 from product_management.schema.types.product import (ProductReviewType,
                                                      ProductReviewInputType,
                                                      ProductReviewConnection)
@@ -28,11 +28,19 @@ class CreateReview(graphene.relay.ClientIDMutation):
 
         product_review = kwargs.get('product_review', None)
 
+        variant = product_review.get('variant', None)
+        variant = from_global_id(variant)[1]
+        variant_obj = get_object_or_404(ProductVariant, id=variant)
+
+        product_review['variant'] = variant_obj
+
         product_review_obj = ProductReview(**product_review,
                                            created_by=info.context.user)
 
-        return CreateReview.Field(ok=True,
-                                  product_review=product_review_obj)
+        product_review_obj.save()
+
+        return CreateReview(ok=True,
+                            product_review=product_review_obj)
 
 
 class UpdateReview(graphene.relay.ClientIDMutation):
@@ -51,6 +59,8 @@ class UpdateReview(graphene.relay.ClientIDMutation):
             raise Exception("Admin Cant Review Product")
 
         id = kwargs.get('id', None)
+        product_review = kwargs.get('product_review', None)
+
         id = from_global_id(id)[1]
 
         rev_obj = get_object_or_404(ProductReview, id=id)
@@ -58,11 +68,11 @@ class UpdateReview(graphene.relay.ClientIDMutation):
         if rev_obj.created_by != info.context.user:
             raise Exception("Not Authorized")
 
-        rev_obj.rating = kwargs.get('rating', rev_obj.rating)
-        rev_obj.review = kwargs.get('review', rev_obj.review)
+        rev_obj.rating = product_review.get('rating', rev_obj.rating)
+        rev_obj.review = product_review.get('review', rev_obj.review)
         rev_obj.updated_by = info.context.user
         rev_obj.save()
-        return UpdateReview.Field(ok=True, product_review=rev_obj)
+        return UpdateReview(ok=True, product_review=rev_obj)
 
 
 class DeleteReview(graphene.relay.ClientIDMutation):
@@ -73,7 +83,7 @@ class DeleteReview(graphene.relay.ClientIDMutation):
     ok = graphene.Boolean()
 
     @permission_required(is_authenticated)
-    def mutate_and_get_payload(root, info, kwargs):
+    def mutate_and_get_payload(root, info, **kwargs):
 
         if info.context.user.is_superuser:
             raise Exception("Admin Cant Review Product")
@@ -86,7 +96,7 @@ class DeleteReview(graphene.relay.ClientIDMutation):
             raise Exception("Not Authorized")
 
         rev_obj.delete()
-        return DeleteReview.Field(ok=True)
+        return DeleteReview(ok=True)
 
 
 class ReviewMutation(graphene.ObjectType):

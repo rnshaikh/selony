@@ -6,18 +6,21 @@ from django.shortcuts import get_object_or_404
 
 from product_management.models import (Category, ProductClass,
                                        Product, ProductVariant,
-                                       ProductImage, ProductStock)
+                                       ProductImage, ProductStock,
+                                       ProductReview)
 from product_management.schema.types.product import (ProductType,
                                                      ProductVariantType,
                                                      CategoryConnection,
                                                      ProductClassConnection,
                                                      ProductImageType,
-                                                     ProductStockType)
+                                                     ProductStockType,
+                                                     ProductReviewType)
 
 from selony_backend.custom_decorator import permission_required
 from selony_backend.custom_permission import is_authenticated
 from selony_backend.custom_filter import (ProductFilter, VariantFilter,
-                                          ProductImageFilter, ProductStockFilter)
+                                          ProductImageFilter, ProductStockFilter,
+                                          ProductReviewFilter)
 
 
 class CategoryQueries(graphene.ObjectType):
@@ -53,6 +56,11 @@ class ProductQueries(graphene.ObjectType):
     product_stocks = DjangoFilterConnectionField(ProductStockType,
                                                  filterset_class=ProductStockFilter)
 
+    product_review = graphene.relay.Node.Field(ProductReviewType)
+    product_reviews = DjangoFilterConnectionField(ProductReviewType,
+                                                  filterset_class=ProductReviewFilter)
+
+
     @permission_required(is_authenticated)
     def resolve_product(root, info, id):
         product_obj = get_object_or_404(Product, id=id)
@@ -80,3 +88,12 @@ class ProductQueries(graphene.ObjectType):
     @permission_required(is_authenticated)
     def resolve_product_stocks(root, info, **kwargs):
         return ProductStock.objects.all()
+
+    @permission_required(is_authenticated)
+    def resolve_product_review(root, info, id):
+        rev_obj = get_object_or_404(ProductReview, id=id)
+        return rev_obj
+
+    # @permission_required(is_authenticated)
+    # def resolve_product_reviews(root, info, **kwargs):
+    #     return ProductReview.objects.all()
