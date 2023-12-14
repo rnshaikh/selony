@@ -6,6 +6,7 @@ from django.shortcuts import get_object_or_404
 from graphql_relay import from_global_id
 
 from card_management.models import Cart, CartUnit, Status
+from card_management.schema.types.cart import CartType
 
 from product_management.models import ProductVariant
 
@@ -21,6 +22,7 @@ class AddCartUnit(graphene.relay.ClientIDMutation):
         quantity = graphene.Int(required=True)
 
     ok = graphene.Boolean()
+    cart = graphene.Field(CartType)
 
     @permission_required(is_authenticated)
     def mutate_and_get_payload(parent, info, **kwargs):
@@ -36,7 +38,7 @@ class AddCartUnit(graphene.relay.ClientIDMutation):
             cart_obj = Cart(created_by=info.context.user,
                             status=Status.Active.value)
             cart_obj.total_quantity = 0
-            obj.last_status_change = timezone.now()
+            cart_obj.last_status_change = timezone.now()
             cart_obj.save()
         else:
             cart_obj = cart_obj[0]
@@ -65,7 +67,7 @@ class AddCartUnit(graphene.relay.ClientIDMutation):
         cart_obj.save()
         cart_unit_obj.save()
 
-        return AddCartUnit(ok=True)
+        return AddCartUnit(ok=True, cart=cart_obj)
 
 
 class UpdateCartUnit(graphene.relay.ClientIDMutation):

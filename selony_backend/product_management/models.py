@@ -45,7 +45,7 @@ class ProductClass(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()
     has_variant = models.BooleanField(default=False)
-    attributes = models.ManyToManyField(Attribute)
+    attributes = models.ManyToManyField(Attribute, blank=True)
 
     def __str__(self):
         return self.name

@@ -94,6 +94,6 @@ class ProductQueries(graphene.ObjectType):
         rev_obj = get_object_or_404(ProductReview, id=id)
         return rev_obj
 
-    # @permission_required(is_authenticated)
-    # def resolve_product_reviews(root, info, **kwargs):
-    #     return ProductReview.objects.all()
+    @permission_required(is_authenticated)
+    def resolve_product_reviews(root, info, **kwargs):
+        return ProductReview.objects.all()
