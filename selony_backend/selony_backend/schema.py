@@ -8,6 +8,7 @@ from user_management.schema.mutations.address import AddressMutation
 from product_management.schema.queries.product import (CategoryQueries,
                                                        ProductClassQueries,
                                                        ProductQueries)
+from product_management.schema.mutations.product import ReviewMutation
 
 from card_management.schema.queries.cart import CartQueries
 from card_management.schema.mutations.cart import CartMutation
@@ -23,7 +24,7 @@ class Query(UserQueries, AddressQueries,
 
 
 class Mutation(UserAuthMutation, AddressMutation, CartMutation,
-               OrderMutation):
+               OrderMutation, ReviewMutation):
     pass
 
 
