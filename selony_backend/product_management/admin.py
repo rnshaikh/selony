@@ -2,7 +2,7 @@ from django.contrib import admin
 
 from product_management.models import (Category, Attribute, AttributeChoice,
                                        ProductClass, Product, ProductVariant,
-                                       ProductImage, ProductStock)
+                                       ProductImage, ProductStock, ProductReview)
 
 
 admin.site.register(Category)
@@ -13,3 +13,4 @@ admin.site.register(Product)
 admin.site.register(ProductVariant)
 admin.site.register(ProductImage)
 admin.site.register(ProductStock)
+admin.site.register(ProductReview)

@@ -18,6 +18,7 @@ class WebHookView(CreateView):
     def post(self, request):
 
         resp = json.loads(request.body.decode("utf-8"))
+        print("resp", resp)
 
         if resp['type'] == "payment_intent.succeeded":
             metadata = resp['data']['object']['metadata']

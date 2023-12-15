@@ -8,7 +8,8 @@ from user_management.models import Address
 from product_management.models import (Product,
                                        ProductVariant,
                                        ProductImage,
-                                       ProductStock)
+                                       ProductStock,
+                                       ProductReview)
 
 
 class NumberInFilter(django_filters.BaseInFilter,
@@ -77,3 +78,22 @@ class ProductStockFilter(django_filters.FilterSet):
     class Meta:
         model = ProductStock
         fields = ('id', 'variant', 'actual_price')
+
+
+class ProductReviewFilter(django_filters.FilterSet):
+
+    id = GlobalIDFilter(field_name="id")
+    from_date = django_filters.DateFilter(method="from_date_filter")
+    to_date = django_filters.DateFilter(method="to_date_filter")
+
+    class Meta:
+        model = ProductReview
+        fields = ('id', 'rating', 'variant', 'from_date',
+                  'to_date')
+
+    def from_date_filter(self, qs, name, value):
+        return qs.filter(created_at__date__gte=value).distinct()
+
+    def to_date_filter(self, qs, name, value):
+        return qs.filter(created_at__date__lte=value).distinct()
+
