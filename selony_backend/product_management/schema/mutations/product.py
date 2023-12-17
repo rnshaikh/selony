@@ -22,7 +22,6 @@ class CreateReview(graphene.relay.ClientIDMutation):
 
     @permission_required(is_authenticated)
     def mutate_and_get_payload(root, info, **kwargs):
-
         if info.context.user.is_superuser:
             raise Exception("Admin Cant Review Product")
 

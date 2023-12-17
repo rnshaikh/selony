@@ -127,10 +127,12 @@ class ProductVariantType(DjangoObjectType):
     class Meta:
         model = ProductVariant
         fields = ('id', 'name', 'description', 'price',
-                  'product', 'attibutes', 'productimage_set',
-                  'productstock_set')
+                  'product', 'attibutes','total_reviews','avg_rating',
+                  'productimage_set', 'productstock_set')
         interfaces = (graphene.relay.Node, )
 
+    total_reviews = graphene.Field(graphene.Int)
+    avg_rating = graphene.Field(graphene.Float)
     product = graphene.Field(ProductType)
     productimage_set = graphene.relay.ConnectionField(ProductImageConnection)
     productstock_set = graphene.relay.ConnectionField(ProductStockConnection)

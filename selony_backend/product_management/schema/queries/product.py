@@ -1,5 +1,7 @@
 import graphene
 
+from django.db.models import Avg, Count 
+
 from graphene_django.filter import DjangoFilterConnectionField
 
 from django.shortcuts import get_object_or_404
@@ -72,14 +74,14 @@ class ProductQueries(graphene.ObjectType):
 
     @permission_required(is_authenticated)
     def resolve_product_variant(root, info, id):
-        import pdb
-        pdb.set_trace()
         product_variant_obj = get_object_or_404(ProductVariant, id=id)
         return product_variant_obj
 
     @permission_required(is_authenticated)
     def resolve_product_variants(root, info, **kwargs):
-        return ProductVariant.objects.all()
+        variants = ProductVariant.objects.all().annotate(total_reviews=Count('productreview__id'),
+                                                         avg_rating=Avg('productreview__rating'))
+        return variants
 
     @permission_required(is_authenticated)
     def resolve_product_images(root, info, **kwargs):
