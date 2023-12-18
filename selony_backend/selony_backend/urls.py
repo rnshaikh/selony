@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.urls import include, path
 from django.conf import settings
 from django.conf.urls.static import static
-
+from django.views.decorators.csrf import csrf_exempt
 
 from graphene_django.views import GraphQLView
 from .schema import schema
@@ -32,7 +32,7 @@ admin.site.index_title = "Welcome To Selony"
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("o/", include('oauth2_provider.urls'), name="oauth2_apps"),
-    path('graphql/', GraphQLView.as_view(graphiql=True, schema=schema)),
+    path('graphql/', csrf_exempt(GraphQLView.as_view(graphiql=True, schema=schema))),
     path('order/webhook/', WebHookView.as_view(), name="stripe_webhook")
 ]
 
