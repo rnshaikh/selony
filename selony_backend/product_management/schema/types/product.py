@@ -4,7 +4,8 @@ from graphene_django import DjangoObjectType
 
 from product_management.models import (Category, Attribute, AttributeChoice,
                                        ProductClass, Product, ProductVariant,
-                                       ProductImage, ProductStock, ProductReview)
+                                       ProductImage, ProductStock, ProductReview,
+                                       ProductReviewImage)
 
 from user_management.schema.types.address import AddressType
 
@@ -150,15 +151,35 @@ class ProductVariantConnection(graphene.relay.Connection):
         node = ProductVariantType
 
 
+
+class ProductReviewImageType(DjangoObjectType):
+
+    class Meta:
+        model = ProductReviewImage
+        fields = ('id', 'review', 'image')
+        interfaces = (graphene.relay.Node, )
+
+
+class ProductReviewImageConnection(graphene.relay.Connection):
+
+    class Meta:
+        node = ProductReviewImageType
+
+
 class ProductReviewType(DjangoObjectType):
 
     class Meta:
         model = ProductReview
         fields = ('id', 'rating', 'review', 'variant',
                   'created_by', 'created_at', 'updated_at',
-                  'updated_by')
+                  'updated_by', 'productreviewimage_set')
 
         interfaces = (graphene.relay.Node, )
+
+    productreviewimage_set = graphene.relay.ConnectionField(ProductReviewImageConnection)
+
+    def resolve_productreviewimage_set(root, info, **kwargs):
+        return root.productreviewimage_set.all()
 
 
 class ProductReviewConnection(graphene.relay.Connection):
