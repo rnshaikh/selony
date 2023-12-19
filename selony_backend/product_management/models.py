@@ -11,6 +11,10 @@ def directory_path(instance, filename):
     return 'product_{0}/{1}/{2}'.format(instance.product.category.name,
                                         instance.product.name,filename)
 
+def review_directory_path(instance, filename):
+
+    return 'product_review_{0}/{1}'.format(instance.review.variant.name,filename)
+
 
 class Category(models.Model):
 
@@ -107,3 +111,22 @@ class ProductReview(CreateUserInfo, UpdateUserInfo):
     rating = models.IntegerField(validators=[MinValueValidator(1),
                                              MaxValueValidator(5)])
     review = models.CharField(max_length=512, blank=True, null=True)
+
+
+class ProductReviewImage(CreateUserInfo):
+
+    review = models.ForeignKey(ProductReview, on_delete=models.CASCADE)
+    image = models.FileField(upload_to=review_directory_path)
+
+    def __str__(self):
+
+        if self.review:
+            return self.review.variant.name
+
+
+
+
+
+
+
+
