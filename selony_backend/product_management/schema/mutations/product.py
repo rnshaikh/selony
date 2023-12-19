@@ -1,10 +1,11 @@
 import graphene
 
 from graphql_relay import from_global_id
+from graphene_file_upload.scalars import Upload
 
 from django.shortcuts import get_object_or_404
 
-from product_management.models import ProductReview, ProductVariant
+from product_management.models import ProductReview, ProductVariant, ProductReviewImage
 from product_management.schema.types.product import (ProductReviewType,
                                                      ProductReviewInputType,
                                                      ProductReviewConnection)
@@ -16,12 +17,15 @@ class CreateReview(graphene.relay.ClientIDMutation):
 
     class Input:
         product_review = ProductReviewInputType(required=True)
+        files = Upload(required=False)
 
     ok = graphene.Boolean()
     product_review = graphene.Field(ProductReviewType)
+    
 
     @permission_required(is_authenticated)
     def mutate_and_get_payload(root, info, **kwargs):
+
         if info.context.user.is_superuser:
             raise Exception("Admin Cant Review Product")
 
@@ -37,6 +41,13 @@ class CreateReview(graphene.relay.ClientIDMutation):
                                            created_by=info.context.user)
 
         product_review_obj.save()
+        rev_obj = None
+        if info.context.FILES:
+            for obj in info.context.FILES:
+                rev_obj = ProductReviewImage(review=product_review_obj, 
+                                             image=info.context.FILES[obj],
+                                             created_by=info.context.user)
+                rev_obj.save()
 
         return CreateReview(ok=True,
                             product_review=product_review_obj)
@@ -94,7 +105,57 @@ class DeleteReview(graphene.relay.ClientIDMutation):
         if rev_obj.created_by != info.context.user:
             raise Exception("Not Authorized")
 
+        rev_obj.productreviewimage_set.all().delete()
         rev_obj.delete()
+        return DeleteReview(ok=True)
+
+
+class AddReviewImage(graphene.relay.ClientIDMutation):
+
+    class Input:
+        id = graphene.ID(required=True)
+        file = Upload()
+
+    ok = graphene.Boolean()
+    product_review = graphene.Field(ProductReviewType)
+    
+
+    @permission_required(is_authenticated)
+    def mutate_and_get_payload(root, info, **kwargs):
+
+        if info.context.user.is_superuser:
+            raise Exception("Admin Cant Add Review Images")
+
+        id = kwargs.get('id', None)
+        id = from_global_id(id)[1]
+        product_review_obj = get_object_or_404(ProductReview, id=id)
+        if info.context.FILES:
+            for obj in info.context.FILES:
+                rev_obj = ProductReviewImage(review=product_review_obj, 
+                                             image=info.context.FILES[obj],
+                                             created_by=info.context.user)
+                rev_obj.save()
+
+        return AddReviewImage(ok=True, product_review=product_review_obj)
+
+
+class DeleteReviewImage(graphene.relay.ClientIDMutation):
+
+    class Input:
+        id = graphene.ID(required=True)
+
+    ok = graphene.Boolean()
+
+    @permission_required(is_authenticated)
+    def mutate_and_get_payload(root, info, **kwargs):
+
+        if info.context.user.is_superuser:
+            raise Exception("Admin Cant Delete Review Images")
+
+        id = kwargs.get('id', None)
+        id = from_global_id(id)[1]
+        img_rev_obj = get_object_or_404(ProductReviewImage, id=id)
+        img_rev_obj.delete()
         return DeleteReview(ok=True)
 
 
@@ -103,4 +164,6 @@ class ReviewMutation(graphene.ObjectType):
     create_review = CreateReview.Field()
     update_review = UpdateReview.Field()
     delete_review = DeleteReview.Field()
+    add_review_image = AddReviewImage.Field()
+    delete_review_image = DeleteReviewImage.Field()
 
