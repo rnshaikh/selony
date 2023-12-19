@@ -16,7 +16,8 @@ from product_management.schema.types.product import (ProductType,
                                                      ProductClassConnection,
                                                      ProductImageType,
                                                      ProductStockType,
-                                                     ProductReviewType)
+                                                     ProductReviewType,
+                                                     ProductReviewImageType)
 
 from selony_backend.custom_decorator import permission_required
 from selony_backend.custom_permission import is_authenticated
