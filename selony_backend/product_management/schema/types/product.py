@@ -172,9 +172,14 @@ class ProductReviewType(DjangoObjectType):
         model = ProductReview
         fields = ('id', 'rating', 'review', 'variant',
                   'created_by', 'created_at', 'updated_at',
-                  'updated_by')
+                  'updated_by', 'productreviewimage_set')
 
         interfaces = (graphene.relay.Node, )
+
+    productreviewimage_set = graphene.relay.ConnectionField(ProductReviewImageConnection)
+
+    def resolve_productreviewimage_set(root, info, **kwargs):
+        return root.productreviewimage_set.all()
 
 
 class ProductReviewConnection(graphene.relay.Connection):
