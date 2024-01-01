@@ -9,14 +9,14 @@ const Header = ()=>{
     return (
 
         <header>
-        <div class="navbar-container">
-            <p class="logo">
+        <div className="navbar-container">
+            <p className="logo">
                 <Link href="/">Selony</Link>
             </p>
 
-            <button type="button" class="cart-icon">
+            <button type="button" className="cart-icon">
                 <AiOutlineShopping />
-                <span clas="cart-item-qty">10</span>
+                <span className="cart-item-qty">10</span>
             </button>
         </div>
         </header>

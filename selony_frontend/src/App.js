@@ -1,15 +1,13 @@
 
 import './App.css'
-import Home from './containers/home';
+import Home from './containers/Home';
+import Product from './containers/Product';
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-      </header>
-      <body>
-          <Home/>
-      </body>
+      {/* <Home/> */}
+      <Product/>
     </div>
   );
 }
