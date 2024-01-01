@@ -10,11 +10,11 @@ const Cart = () =>{
 
     return(
 
-        <div class="cart-wrapper">
-            <div class="cart-container">
+        <div className="cart-wrapper">
+            <div className="cart-container">
                 <button
                 type="button"
-                class="cart-heading">
+                className="cart-heading">
                 <AiOutlineLeft />
                 <span class="heading">Your Cart</span>
                 <span class="cart-num-items">(10 items)</span>
@@ -25,33 +25,33 @@ const Cart = () =>{
                     <Link href="/">
                     <button
                         type="button"
-                        class="btn"
+                        className="btn"
                     >
                         Continue Shopping
                     </button>
                     </Link>
                 </div>
-            <div class="product-container">
-                <div class="product" key="">
-                <img src="" class="cart-product-image" />
-                <div class="item-desc">
+            <div className="product-container">
+                <div className="product" key="">
+                <img src="" className="cart-product-image" />
+                <div className="item-desc">
                     <div className="flex top">
                     <h5>HeadPhone</h5>
                     <h4>11000</h4>
                     </div>
-                    <div class="flex bottom">
+                    <div className="flex bottom">
                     <div>
-                    <p class="quantity-desc">
+                    <p className="quantity-desc">
                         <span class="minus">
                         <AiOutlineMinus />
                         </span>
-                        <span class="num">10</span>
-                        <span class="plus"><AiOutlinePlus /></span>
+                        <span className="num">10</span>
+                        <span className="plus"><AiOutlinePlus /></span>
                     </p>
                     </div>
                     <button
                         type="button"
-                        class="remove-item"
+                        className="remove-item"
                     >
                         <TiDeleteOutline />
                     </button>
